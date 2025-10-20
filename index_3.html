@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Happy Women Day 💐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: linear-gradient(180deg, #ffe6f9, #f4d0ff);
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      user-select: none;
+    }
+
+    h1 {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+      color: #c2185b;
+      font-size: clamp(24px, 5vw, 40px);
+      text-shadow: 1px 1px 3px #fff;
+      z-index: 10;
+    }
+
+    .balloon {
+      position: absolute;
+      width: clamp(45px, 10vw, 70px);
+      height: clamp(60px, 13vw, 100px);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      text-align: center;
+      line-height: clamp(60px, 13vw, 100px);
+      font-size: clamp(20px, 5vw, 30px);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      animation: float 6s ease-in-out infinite;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .string {
+      position: absolute;
+      width: 2px;
+      height: clamp(30px, 5vh, 50px);
+      background: #666;
+      left: 50%;
+      bottom: -40px;
+      transform: translateX(-50%);
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(2deg); }
+      100% { transform: translateY(0) rotate(-2deg); }
+    }
+
+    /* === Bó hoa === */
+    .flower-bouquet {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(2);
+      font-size: clamp(80px, 25vw, 160px);
+      animation: sway 2.5s ease-in-out infinite;
+      z-index: 20;
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: translate(-50%, -50%) scale(2) rotate(-5deg); }
+      50% { transform: translate(-50%, -50%) scale(2) rotate(5deg); }
+    }
+
+    .petal {
+      position: fixed;
+      top: -30px;
+      font-size: 24px;
+      opacity: 0.8;
+      animation: fall 6s linear infinite;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .message {
+      position: absolute;
+      bottom: 40px;
+      width: 100%;
+      text-align: center;
+      font-size: clamp(16px, 4vw, 24px);
+      color: #d6336c;
+      opacity: 0;
+      transition: opacity 2s ease;
+      font-weight: bold;
+      z-index: 30;
+    }
+  </style>
+</head>
+<body>
+  <h1>💖 Happy Women Day 💖</h1>
+
+  <div id="gameArea"></div>
+  <div class="flower-bouquet" id="bouquet">💐</div>
+  <div class="message" id="message">💌 Chúc các bạn luôn xinh đẹp, hạnh phúc & thành công ✨ 🌟</div>
+
+  <script>
+    const correctSequence = [2, 0, 1, 0];
+    let userSequence = [];
+    const gameArea = document.getElementById("gameArea");
+    const bouquet = document.getElementById("bouquet");
+    const message = document.getElementById("message");
+
+    function createBalloons() {
+      gameArea.innerHTML = "";
+      userSequence = [];
+      bouquet.style.display = "none";
+      message.style.opacity = 0;
+
+      const numBalloons = 18;
+      const colors = ["#ff4d88", "#ff80aa", "#a36bff", "#ffb3d9", "#ff6699", "#9966ff"];
+      const sectionWidth = 100 / numBalloons;
+
+      for (let i = 0; i < numBalloons; i++) {
+        const balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        const num = Math.floor(Math.random() * 10);
+        balloon.textContent = num;
+        balloon.dataset.num = num;
+        balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+        balloon.style.left = (i * sectionWidth + sectionWidth / 2) + "vw";
+        balloon.style.top = (Math.random() * 40 + 25) + "vh";
+        balloon.style.animationDuration = (5 + Math.random() * 3) + "s";
+        const string = document.createElement("div");
+        string.classList.add("string");
+        balloon.appendChild(string);
+        balloon.addEventListener("click", () => handleClick(balloon));
+        gameArea.appendChild(balloon);
+      }
+
+      // đảm bảo có 2-0-1-0 rõ ràng
+      const mustHave = [2, 0, 1, 0];
+      for (let j = 0; j < mustHave.length; j++) {
+        const balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        balloon.textContent = mustHave[j];
+        balloon.dataset.num = mustHave[j];
+        balloon.style.background = "#ff4d88";
+        balloon.style.left = (15 + j * 20) + "vw";
+        balloon.style.top = "60vh";
+        balloon.style.zIndex = "10";
+        const string = document.createElement("div");
+        string.classList.add("string");
+        balloon.appendChild(string);
+        balloon.addEventListener("click", () => handleClick(balloon));
+        gameArea.appendChild(balloon);
+      }
+    }
+
+    function handleClick(balloon) {
+      const num = parseInt(balloon.dataset.num);
+      userSequence.push(num);
+      balloon.style.transform = "scale(1.3)";
+      setTimeout(() => balloon.style.opacity = "0", 200);
+      if (userSequence.length === correctSequence.length) {
+        const isCorrect = userSequence.every((v, i) => v === correctSequence[i]);
+        setTimeout(() => {
+          if (isCorrect) success();
+          else explodeAll();
+        }, 400);
+      }
+    }
+
+    function explodeAll() {
+      const balloons = document.querySelectorAll(".balloon");
+      balloons.forEach((b, i) => {
+        setTimeout(() => {
+          b.style.transition = "transform 0.2s ease, opacity 0.2s ease";
+          b.style.transform = "scale(1.8)";
+          b.style.opacity = "0";
+        }, i * 50);
+      });
+      setTimeout(() => createBalloons(), 1500);
+    }
+
+    function success() {
+      const balloons = document.querySelectorAll(".balloon");
+      balloons.forEach(b => b.remove());
+      bouquet.style.display = "block";
+      message.style.opacity = 1;
+
+      // hiệu ứng hoa rơi vĩnh viễn
+      setInterval(() => {
+        const petal = document.createElement("div");
+        petal.className = "petal";
+        petal.textContent = ["🌸", "💮", "🌼", "💖","✨","🌟"][Math.floor(Math.random() * 4)];
+        petal.style.left = Math.random() * 100 + "vw";
+        petal.style.animationDuration = (4 + Math.random() * 4) + "s";
+        document.body.appendChild(petal);
+        setTimeout(() => petal.remove(), 8000);
+      }, 300);
+    }
+
+    createBalloons();
+  </script>
+</body>
+</html>
